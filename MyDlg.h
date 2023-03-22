@@ -42,7 +42,7 @@ public:
 	vector<PROCESS_INFORMATION> IdInfo;
 	ofstream log;
 	afx_msg void OnTimer(UINT_PTR);
-	
+	CString MyDlg::MakeUniqueListItem(CString item, CListBox& box);
 	UINT_PTR timerid;
 };
 template<typename T>

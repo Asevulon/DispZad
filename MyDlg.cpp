@@ -139,7 +139,8 @@ void MyDlg::OnBnClickedButtonStartNewProcess()
 	PROCESS_INFORMATION pi;
 	if (CreateProcess(NULL, path, NULL, NULL, NULL, 0, NULL, NULL, &si, &pi))
 	{
-		actPrgList.AddString(fileName);
+		auto temp = MakeUniqueListItem(CString(fileName), actPrgList);
+		actPrgList.InsertString(-1, temp);
 	}
 
 	IdInfo.push_back(pi);
@@ -190,7 +191,6 @@ afx_msg void MyDlg::OnTimer(UINT_PTR idEvent)
 {
 	
 	log << "timer is working\n";
-	KillTimer(timerid);
 	for (int i = 0; i < IdInfo.size(); i++)
 	{
 		DWORD exitCode = 0;
@@ -203,8 +203,24 @@ afx_msg void MyDlg::OnTimer(UINT_PTR idEvent)
 	}
 
 
-	timerid = SetTimer(TIMER1, 1000, NULL);
-
-
 	CDialogEx::OnTimer(idEvent);
+}
+
+
+CString MyDlg::MakeUniqueListItem(CString item, CListBox& box)
+{
+	if (box.FindString(-1, item) == LB_ERR)return item;
+	int ctr = 2;
+	CString index;
+	index.Format(L"(%d)", ctr);
+	item += index;
+	while (box.FindString(-1, item) != LB_ERR)
+	{
+		item.Delete(item.GetLength() - 3, 3);
+		index;
+		index.Format(L"(%d)", ctr);
+		item += index;
+		ctr++;
+	}
+	return item;
 }
